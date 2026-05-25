@@ -4,18 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="main-container">
+        <!-- Side Sessions Button -->
+        <button class="side-panel-toggle" id="sessionsPanelToggle" title="Sessions">
+            <span class="toggle-text">Sessions</span>
+        </button>
+        
+        <!-- Main Timer Section -->
         <div class="timer-section">
-            <h1>Pomodoro Timer</h1>
+            <h1 class="app-title">Pomodoro Clock</h1>
             
-            <div class="session-indicator">
-                <span id="sessionType" class="session-type focus">Focus</span>
+            <div class="timer-container">
+                <div class="session-indicator">
+                    <span id="sessionType" class="session-type focus">Focus</span>
+                </div>
+                
+                <div class="timer-glow" id="timerGlow"></div>
+                <div class="timer-display" id="timerDisplay">25:00</div>
             </div>
-            
-            <div class="timer-display" id="timerDisplay">25:00</div>
             
             <div class="controls">
                 <button id="startBtn" class="btn btn-primary">Start</button>
@@ -26,22 +38,37 @@
             
             <div class="config-section">
                 <div class="config-group">
-                    <label for="focusInput">Focus (minutes):</label>
-                    <input type="number" id="focusInput" min="1" max="60" value="25">
+                    <label for="focusInput">Focus</label>
+                    <div class="input-wrapper">
+                        <button class="input-btn" id="focusDecrease">−</button>
+                        <input type="number" id="focusInput" min="1" max="60" value="25">
+                        <button class="input-btn" id="focusIncrease">+</button>
+                    </div>
                 </div>
                 <div class="config-group">
-                    <label for="breakInput">Break (minutes):</label>
-                    <input type="number" id="breakInput" min="1" max="30" value="5">
+                    <label for="breakInput">Break</label>
+                    <div class="input-wrapper">
+                        <button class="input-btn" id="breakDecrease">−</button>
+                        <input type="number" id="breakInput" min="1" max="30" value="5">
+                        <button class="input-btn" id="breakIncrease">+</button>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="history-section">
-            <h2>Today's Sessions</h2>
+        <!-- Side Sessions Panel -->
+        <div class="sessions-panel" id="sessionsPanel">
+            <div class="panel-header">
+                <h2>Today's Sessions</h2>
+                <button class="close-panel" id="closePanelBtn">×</button>
+            </div>
             <div id="historyList" class="history-list">
                 <p class="empty-history">No sessions completed yet</p>
             </div>
         </div>
+        
+        <!-- Overlay for closing panel -->
+        <div class="panel-overlay" id="panelOverlay"></div>
     </div>
     
     <script src="script.js"></script>

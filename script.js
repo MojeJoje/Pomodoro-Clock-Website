@@ -25,8 +25,10 @@ class PomodoroTimer {
         // Initialize
         this.loadSettings();
         this.loadHistory();
+        this.renderHistory();
         this.attachEventListeners();
         this.updateDisplay();
+        this.updateGlow();
     }
     
     attachEventListeners() {
@@ -46,6 +48,8 @@ class PomodoroTimer {
             this.breakDuration = settings.break * 60;
             this.focusInput.value = settings.focus;
             this.breakInput.value = settings.break;
+            // Update timeRemaining to match the loaded focusDuration
+            this.timeRemaining = this.focusDuration;
         }
     }
     
@@ -146,6 +150,7 @@ class PomodoroTimer {
         this.timeRemaining = this.isBreak ? this.breakDuration : this.focusDuration;
         this.updateSessionIndicator();
         this.updateDisplay();
+        this.updateGlow();
     }
     
     playAudio() {
@@ -186,6 +191,16 @@ class PomodoroTimer {
         } else {
             this.sessionType.textContent = 'Focus';
             this.sessionType.className = 'session-type focus';
+        }
+        this.updateGlow();
+    }
+    
+    updateGlow() {
+        const timerGlow = document.getElementById('timerGlow');
+        if (this.isBreak) {
+            timerGlow.className = 'timer-glow break-glow';
+        } else {
+            timerGlow.className = 'timer-glow focus-glow';
         }
     }
     
@@ -231,9 +246,8 @@ class PomodoroTimer {
         this.historyList.innerHTML = history.map(item => {
             const date = new Date(item.time);
             const timeStr = date.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
+                hour: 'numeric',
+                minute: '2-digit'
             });
             
             return `
@@ -248,7 +262,78 @@ class PomodoroTimer {
     }
 }
 
+// Sessions panel functionality
+function initializeSessionsPanel() {
+    const toggleBtn = document.getElementById('sessionsPanelToggle');
+    const panel = document.getElementById('sessionsPanel');
+    const overlay = document.getElementById('panelOverlay');
+    const closeBtn = document.getElementById('closePanelBtn');
+    let isPanelOpen = false;
+    
+    function openPanel() {
+        panel.classList.add('active');
+        overlay.classList.add('active');
+        toggleBtn.classList.add('hidden');
+        isPanelOpen = true;
+    }
+    
+    function closePanel() {
+        panel.classList.remove('active');
+        overlay.classList.remove('active');
+        toggleBtn.classList.remove('hidden');
+        isPanelOpen = false;
+    }
+    
+    // Toggle on button click
+    toggleBtn.addEventListener('click', openPanel);
+    
+    // Close on X button
+    closeBtn.addEventListener('click', closePanel);
+    
+    // Close on overlay click
+    overlay.addEventListener('click', closePanel);
+    
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isPanelOpen) {
+            closePanel();
+        }
+    });
+}
+
 // Initialize the timer when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new PomodoroTimer();
+    const timer = new PomodoroTimer();
+    initializeSessionsPanel();
+    initializeInputControls(timer);
 });
+
+// Custom input controls
+function initializeInputControls(timer) {
+    const focusIncrease = document.getElementById('focusIncrease');
+    const focusDecrease = document.getElementById('focusDecrease');
+    const breakIncrease = document.getElementById('breakIncrease');
+    const breakDecrease = document.getElementById('breakDecrease');
+    const focusInput = document.getElementById('focusInput');
+    const breakInput = document.getElementById('breakInput');
+    
+    focusIncrease?.addEventListener('click', () => {
+        focusInput.value = Math.min(60, parseInt(focusInput.value) + 1);
+        focusInput.dispatchEvent(new Event('change'));
+    });
+    
+    focusDecrease?.addEventListener('click', () => {
+        focusInput.value = Math.max(1, parseInt(focusInput.value) - 1);
+        focusInput.dispatchEvent(new Event('change'));
+    });
+    
+    breakIncrease?.addEventListener('click', () => {
+        breakInput.value = Math.min(30, parseInt(breakInput.value) + 1);
+        breakInput.dispatchEvent(new Event('change'));
+    });
+    
+    breakDecrease?.addEventListener('click', () => {
+        breakInput.value = Math.max(1, parseInt(breakInput.value) - 1);
+        breakInput.dispatchEvent(new Event('change'));
+    });
+}
