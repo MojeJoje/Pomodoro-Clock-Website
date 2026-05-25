@@ -1,2 +1,49 @@
-<h1>Hello</h1>
-<p>This is a simple HTML file.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="timer-section">
+            <h1>Pomodoro Timer</h1>
+            
+            <div class="session-indicator">
+                <span id="sessionType" class="session-type focus">Focus</span>
+            </div>
+            
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary">Start</button>
+                <button id="pauseBtn" class="btn btn-secondary" disabled>Pause</button>
+                <button id="resumeBtn" class="btn btn-secondary" disabled>Resume</button>
+                <button id="resetBtn" class="btn btn-danger">Reset</button>
+            </div>
+            
+            <div class="config-section">
+                <div class="config-group">
+                    <label for="focusInput">Focus (minutes):</label>
+                    <input type="number" id="focusInput" min="1" max="60" value="25">
+                </div>
+                <div class="config-group">
+                    <label for="breakInput">Break (minutes):</label>
+                    <input type="number" id="breakInput" min="1" max="30" value="5">
+                </div>
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <h2>Today's Sessions</h2>
+            <div id="historyList" class="history-list">
+                <p class="empty-history">No sessions completed yet</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
